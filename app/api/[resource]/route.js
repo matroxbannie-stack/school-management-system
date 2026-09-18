@@ -1,20 +1,17 @@
-import { prisma } from "../../../lib/prisma";
+﻿import { prisma } from "../../../lib/prisma";
 import { getSession } from "../../../lib/auth";
 
 const maps = {
   students: "student", teachers: "teacher", parents: "parent",
   classes: "classRoom", subjects: "subject", attendance: "attendance",
   fees: "fee", results: "result", timetable: "timetable", notices: "notice",
-  library: "libraryBook", transport: "transport",
-  announcements: "announcement", settings: "setting"
+  library: "libraryBook", transport: "transport", inventory: "inventoryItem",
+  announcements: "announcement", settings: "setting", homework: "homework"
 };
 
-// Resources a PARENT is never allowed to read (other people's data).
 const PARENT_BLOCKED_READ = ["teachers", "parents"];
-// Resources a PARENT never sees results for at all (defence in depth; UI also hides these).
 const PARENT_OWN_DATA = ["students", "attendance", "fees", "results"];
-// Resources a TEACHER is allowed to create/update/delete.
-const TEACHER_WRITABLE = ["attendance", "results"];
+const TEACHER_WRITABLE = ["attendance", "results", "homework"];
 
 function clean(resource, data) {
   const d = { ...data };
@@ -27,6 +24,7 @@ function clean(resource, data) {
     library: ["quantity", "available"],
     transport: ["monthlyFee"],
     students: ["parentId"],
+    inventory: ["quantity", "lowStock"],
   };
   for (const k of numeric[resource] || []) {
     if (d[k] === "") d[k] = null;

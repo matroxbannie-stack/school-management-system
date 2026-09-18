@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useEffect, useState } from "react";
 
 export default function WelcomePopup() {
@@ -35,13 +35,13 @@ export default function WelcomePopup() {
         maxWidth: 320,
       }}
     >
-      <span>?? Welcome back, <b>{name}</b>!</span>
+      <span>👋 Welcome back, <b>{name}</b>!</span>
       <button
         onClick={() => setName(null)}
         style={{ background: "none", border: 0, color: "#9ca3af", cursor: "pointer", fontSize: 18, lineHeight: 1, padding: 0 }}
         aria-label="Dismiss"
       >
-        �
+        ×
       </button>
     </div>
   );

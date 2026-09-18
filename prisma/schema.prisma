@@ -1,4 +1,4 @@
-generator client {
+﻿generator client {
   provider = "prisma-client-js"
 }
 
@@ -53,8 +53,6 @@ model Parent {
   user User?
 }
 
-// Login accounts for Admin / Teacher / Parent portals.
-// role is one of: "ADMIN", "TEACHER", "PARENT"
 model User {
   id Int @id @default(autoincrement())
   username String @unique
@@ -161,6 +159,27 @@ model Announcement {
   message String
   date String
   priority String @default("Normal")
+}
+
+model InventoryItem {
+  id Int @id @default(autoincrement())
+  name String
+  category String?
+  quantity Int @default(0)
+  unit String?
+  lowStock Int @default(5)
+  updatedAt DateTime @updatedAt
+}
+
+model Homework {
+  id Int @id @default(autoincrement())
+  className String
+  section String?
+  subject String
+  title String
+  description String?
+  dueDate String?
+  createdAt DateTime @default(now())
 }
 
 model Setting {

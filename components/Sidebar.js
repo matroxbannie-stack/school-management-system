@@ -1,21 +1,24 @@
-"use client";
+﻿"use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 const items = [
   ["/", "📊", "Dashboard", "ALL"],
-  ["/students", "👨‍🎓", "Students", ["ADMIN", "TEACHER"]],
-  ["/teachers", "👨‍🏫", "Teachers", ["ADMIN"]],
+  ["/student-lookup", "🔍", "Student Lookup", ["ADMIN", "TEACHER"]],
+  ["/students", "🎓", "Students", ["ADMIN", "TEACHER"]],
+  ["/teachers", "🧑‍🏫", "Teachers", ["ADMIN"]],
   ["/parents", "👪", "Parents / Guardians", ["ADMIN"]],
   ["/classes", "🏫", "Classes & Sections", ["ADMIN"]],
   ["/subjects", "📚", "Subjects", ["ADMIN"]],
   ["/attendance", "📅", "Attendance", ["ADMIN", "TEACHER", "PARENT"]],
   ["/fees", "💰", "Fees", ["ADMIN", "PARENT"]],
   ["/results", "📝", "Results", ["ADMIN", "TEACHER", "PARENT"]],
+  ["/homework", "📔", "Homework", ["ADMIN", "TEACHER", "PARENT"]],
   ["/timetable", "🕐", "Timetable", ["ADMIN", "TEACHER", "PARENT"]],
   ["/notices", "📢", "Notices", "ALL"],
   ["/announcements", "🔔", "Announcements", "ALL"],
   ["/library", "📖", "Library", ["ADMIN", "TEACHER"]],
+  ["/inventory", "📦", "Inventory", ["ADMIN"]],
   ["/transport", "🚌", "Transport", ["ADMIN"]],
   ["/analytics", "📈", "Analytics", ["ADMIN", "TEACHER"]],
   ["/users", "🔑", "Login Accounts", ["ADMIN"]],
@@ -38,7 +41,7 @@ export default function Sidebar({ user }) {
           </Link>
         ))}
       </nav>
-      <button className="logout" onClick={logout}>↪ Logout</button>
+      <button className="logout" onClick={logout}>Logout</button>
       <div className="sideBottom">
         {user?.name || "School Administration"}<br />
         <b>{role}</b>
