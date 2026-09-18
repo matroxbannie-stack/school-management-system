@@ -16,8 +16,25 @@ async function AdminDashboard() {
         <div className="card"><div className="label">Fee Collected</div><div className="num">Rs. {Number(f._sum.paid || 0).toLocaleString()}</div></div>
       </div>
       <div className="panel">
-        <h2>EduManage Pro</h2>
-        <p className="muted">All major modules are connected to the SQLite database. Use the sidebar to add, edit and delete records. Open <b>Analytics</b> for attendance & fee charts.</p>
+        <h2>Quick Actions</h2>
+        <div className="quickLinks">
+          <a className="quickLink" href="/students"><span className="qi">🧑‍🎓</span>Students</a>
+          <a className="quickLink" href="/teachers"><span className="qi">🧑‍🏫</span>Teachers</a>
+          <a className="quickLink" href="/classes"><span className="qi">🏫</span>Classes</a>
+          <a className="quickLink" href="/subjects"><span className="qi">📚</span>Subjects</a>
+          <a className="quickLink" href="/attendance"><span className="qi">🗓️</span>Attendance</a>
+          <a className="quickLink" href="/fees"><span className="qi">💳</span>Fees</a>
+          <a className="quickLink" href="/results"><span className="qi">📝</span>Results</a>
+          <a className="quickLink" href="/timetable"><span className="qi">⏰</span>Timetable</a>
+          <a className="quickLink" href="/library"><span className="qi">📖</span>Library</a>
+          <a className="quickLink" href="/transport"><span className="qi">🚌</span>Transport</a>
+          <a className="quickLink" href="/notices"><span className="qi">📌</span>Notices</a>
+          <a className="quickLink" href="/announcements"><span className="qi">📣</span>Announcements</a>
+          <a className="quickLink" href="/parents"><span className="qi">👪</span>Parents</a>
+          <a className="quickLink" href="/users"><span className="qi">🔑</span>Login Accounts</a>
+          <a className="quickLink" href="/analytics"><span className="qi">📊</span>Analytics</a>
+          <a className="quickLink" href="/settings"><span className="qi">⚙️</span>Settings</a>
+        </div>
       </div>
     </>
   );
