@@ -63,7 +63,7 @@ export default function UsersPage() {
 
   return (
     <>
-      <div className="top"><div><h1>Login Accounts</h1><div className="sub">Admin, Teacher aur Parent portal ke liye username/password yahan banayein</div></div></div>
+      <div className="top"><div><h1>Login Accounts</h1><div className="sub">Create usernames and passwords here for the Admin, Teacher, and Parent portals</div></div></div>
 
       <div className="form">
         <h2>{edit ? "Edit" : "Add"} Login Account</h2>

@@ -50,7 +50,7 @@ async function ParentDashboard(session) {
     <div className="panel">
       <h2>Your Children</h2>
       {children.length === 0 ? (
-        <p className="muted">Koi student is account se link nahi hai. School admin se rabta karein.</p>
+        <p className="muted">No student is linked to this account. Please contact the school admin.</p>
       ) : (
         children.map((child) => {
           const present = child.attendance.filter((a) => a.status === "Present").length;
