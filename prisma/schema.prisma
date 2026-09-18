@@ -1,0 +1,174 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Student {
+  id Int @id @default(autoincrement())
+  name String
+  rollNo String @unique
+  className String
+  section String
+  gender String?
+  dob String?
+  phone String?
+  email String?
+  address String?
+  parentName String?
+  parentPhone String?
+  admissionDate String?
+  createdAt DateTime @default(now())
+  attendance Attendance[]
+  fees Fee[]
+  results Result[]
+  parentId Int?
+  parentAccount Parent? @relation(fields: [parentId], references: [id])
+}
+
+model Teacher {
+  id Int @id @default(autoincrement())
+  name String
+  subject String
+  qualification String?
+  phone String?
+  email String?
+  address String?
+  joiningDate String?
+  createdAt DateTime @default(now())
+  user User?
+}
+
+model Parent {
+  id Int @id @default(autoincrement())
+  name String
+  phone String
+  email String?
+  address String?
+  occupation String?
+  children Student[]
+  user User?
+}
+
+// Login accounts for Admin / Teacher / Parent portals.
+// role is one of: "ADMIN", "TEACHER", "PARENT"
+model User {
+  id Int @id @default(autoincrement())
+  username String @unique
+  password String
+  role String
+  name String?
+  teacherId Int? @unique
+  parentId Int? @unique
+  teacher Teacher? @relation(fields: [teacherId], references: [id])
+  parent Parent? @relation(fields: [parentId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model ClassRoom {
+  id Int @id @default(autoincrement())
+  name String
+  section String
+  room String?
+  capacity Int?
+  classTeacher String?
+}
+
+model Subject {
+  id Int @id @default(autoincrement())
+  name String
+  code String @unique
+  className String?
+  teacher String?
+}
+
+model Attendance {
+  id Int @id @default(autoincrement())
+  studentId Int
+  date String
+  status String
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  @@unique([studentId, date])
+}
+
+model Fee {
+  id Int @id @default(autoincrement())
+  studentId Int
+  month String
+  amount Float
+  paid Float @default(0)
+  status String @default("Pending")
+  dueDate String?
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+}
+
+model Result {
+  id Int @id @default(autoincrement())
+  studentId Int
+  exam String
+  subject String
+  marks Float
+  total Float
+  grade String
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+}
+
+model Timetable {
+  id Int @id @default(autoincrement())
+  day String
+  className String
+  subject String
+  teacher String
+  startTime String
+  endTime String
+  room String?
+}
+
+model Notice {
+  id Int @id @default(autoincrement())
+  title String
+  message String
+  date String
+  audience String?
+}
+
+model LibraryBook {
+  id Int @id @default(autoincrement())
+  title String
+  author String
+  isbn String?
+  category String?
+  quantity Int @default(1)
+  available Int @default(1)
+}
+
+model Transport {
+  id Int @id @default(autoincrement())
+  routeName String
+  vehicleNo String
+  driverName String
+  driverPhone String?
+  pickupPoint String?
+  monthlyFee Float @default(0)
+}
+
+model Announcement {
+  id Int @id @default(autoincrement())
+  title String
+  message String
+  date String
+  priority String @default("Normal")
+}
+
+model Setting {
+  id Int @id @default(autoincrement())
+  schoolName String
+  email String?
+  phone String?
+  address String?
+  website String?
+  logoUrl String?
+}

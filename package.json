@@ -1,0 +1,24 @@
+{
+  "name": "school-management-pro",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "seed": "node prisma/seed.js"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.16.2",
+    "bcryptjs": "^2.4.3",
+    "next": "15.5.9",
+    "pdf-lib": "^1.17.1",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "recharts": "^2.12.7",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "prisma": "^6.16.2"
+  }
+}
