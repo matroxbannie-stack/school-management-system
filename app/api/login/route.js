@@ -25,7 +25,7 @@ export async function POST(req) {
     parentId: user.parentId,
   };
 
-  const res = NextResponse.json({ ok: true, role: user.role });
+  const res = NextResponse.json({ ok: true, role: user.role, name: user.name });
   res.cookies.set(SESSION_COOKIE, encodeSession(session), {
     httpOnly: true,
     sameSite: "lax",
