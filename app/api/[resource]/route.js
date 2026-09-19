@@ -1,4 +1,4 @@
-﻿import { prisma } from "../../../lib/prisma";
+import { prisma } from "../../../lib/prisma";
 import { getSession } from "../../../lib/auth";
 
 const maps = {
@@ -6,7 +6,8 @@ const maps = {
   classes: "classRoom", subjects: "subject", attendance: "attendance",
   fees: "fee", results: "result", timetable: "timetable", notices: "notice",
   library: "libraryBook", transport: "transport", inventory: "inventoryItem",
-  announcements: "announcement", settings: "setting", homework: "homework", salaries: "salary"
+  announcements: "announcement", settings: "setting", homework: "homework", salaries: "salary",
+  examSchedule: "examSchedule"
 };
 
 const PARENT_BLOCKED_READ = ["teachers", "parents", "salaries"];

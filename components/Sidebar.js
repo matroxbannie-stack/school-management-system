@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -15,6 +15,7 @@ const items = [
   ["/salary", "💵", "Teacher Salary", ["ADMIN"]],
   ["/results", "📝", "Results", ["ADMIN", "TEACHER", "PARENT"]],
   ["/homework", "📔", "Homework", ["ADMIN", "TEACHER", "PARENT"]],
+  ["/exam-schedule", "🗒️", "Exam Schedule", ["ADMIN", "TEACHER", "PARENT"]],
   ["/timetable", "🕐", "Timetable", ["ADMIN", "TEACHER", "PARENT"]],
   ["/notices", "📢", "Notices", "ALL"],
   ["/announcements", "🔔", "Announcements", "ALL"],

@@ -9,7 +9,7 @@ export default async function Page() {
       title="Students"
       api="/api/students"
       canWrite={canWrite}
-      extraActions={[{ label: "Report Card", hrefPrefix: "/api/report-card/" }]}
+      extraActions={[{ label: "Report Card", hrefPrefix: "/api/report-card/" }, { label: "Admit Card", hrefPrefix: "/api/admit-card/" }]}
       fields={[
         { key: "name", label: "Full Name" },
         { key: "rollNo", label: "Roll Number" },
