@@ -1,4 +1,4 @@
-﻿generator client {
+generator client {
   provider = "prisma-client-js"
 }
 
@@ -40,6 +40,7 @@ model Teacher {
   joiningDate String?
   createdAt DateTime @default(now())
   user User?
+  salaries Salary[]
 }
 
 model Parent {
@@ -180,6 +181,16 @@ model Homework {
   description String?
   dueDate String?
   createdAt DateTime @default(now())
+}
+
+model Salary {
+  id Int @id @default(autoincrement())
+  teacherId Int
+  month String
+  amount Float
+  paid Float @default(0)
+  status String @default("Pending")
+  teacher Teacher @relation(fields: [teacherId], references: [id], onDelete: Cascade)
 }
 
 model Setting {

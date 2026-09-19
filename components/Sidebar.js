@@ -4,7 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 const items = [
   ["/", "📊", "Dashboard", "ALL"],
-  ["/student-lookup", "🔍", "Student Lookup", ["ADMIN", "TEACHER"]],
+  ["/student-lookup", "🔍", "People Lookup", ["ADMIN", "TEACHER"]],
   ["/students", "🎓", "Students", ["ADMIN", "TEACHER"]],
   ["/teachers", "🧑‍🏫", "Teachers", ["ADMIN"]],
   ["/parents", "👪", "Parents / Guardians", ["ADMIN"]],
@@ -12,6 +12,7 @@ const items = [
   ["/subjects", "📚", "Subjects", ["ADMIN"]],
   ["/attendance", "📅", "Attendance", ["ADMIN", "TEACHER", "PARENT"]],
   ["/fees", "💰", "Fees", ["ADMIN", "PARENT"]],
+  ["/salary", "💵", "Teacher Salary", ["ADMIN"]],
   ["/results", "📝", "Results", ["ADMIN", "TEACHER", "PARENT"]],
   ["/homework", "📔", "Homework", ["ADMIN", "TEACHER", "PARENT"]],
   ["/timetable", "🕐", "Timetable", ["ADMIN", "TEACHER", "PARENT"]],

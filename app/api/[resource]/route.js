@@ -6,10 +6,10 @@ const maps = {
   classes: "classRoom", subjects: "subject", attendance: "attendance",
   fees: "fee", results: "result", timetable: "timetable", notices: "notice",
   library: "libraryBook", transport: "transport", inventory: "inventoryItem",
-  announcements: "announcement", settings: "setting", homework: "homework"
+  announcements: "announcement", settings: "setting", homework: "homework", salaries: "salary"
 };
 
-const PARENT_BLOCKED_READ = ["teachers", "parents"];
+const PARENT_BLOCKED_READ = ["teachers", "parents", "salaries"];
 const PARENT_OWN_DATA = ["students", "attendance", "fees", "results"];
 const TEACHER_WRITABLE = ["attendance", "results", "homework"];
 
@@ -25,6 +25,7 @@ function clean(resource, data) {
     transport: ["monthlyFee"],
     students: ["parentId"],
     inventory: ["quantity", "lowStock"],
+    salaries: ["teacherId", "amount", "paid"],
   };
   for (const k of numeric[resource] || []) {
     if (d[k] === "") d[k] = null;

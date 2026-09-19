@@ -12,8 +12,14 @@ async function AdminDashboard() {
     include: { student: true },
     orderBy: { dueDate: "asc" },
   });
+  const pendingSalaries = await prisma.salary.findMany({
+    where: { status: { not: "Paid" } },
+    include: { teacher: true },
+    orderBy: { id: "asc" },
+  });
   const lowStockItems = await prisma.inventoryItem.findMany({ orderBy: { quantity: "asc" } }).then((items) => items.filter((i) => i.quantity <= i.lowStock));
   const totalPending = pendingFees.reduce((sum, fee) => sum + (Number(fee.amount) - Number(fee.paid)), 0);
+  const totalSalaryPending = pendingSalaries.reduce((sum, s) => sum + (Number(s.amount) - Number(s.paid)), 0);
 
   return (
     <>
@@ -73,15 +79,42 @@ async function AdminDashboard() {
       </div>
 
       <div className="panel" style={{ marginTop: 20 }}>
+        <h2>💵 Pending Teacher Salaries {pendingSalaries.length > 0 && <span className="muted" style={{ fontWeight: 400, fontSize: 13 }}>({pendingSalaries.length} records, Rs. {totalSalaryPending.toLocaleString()} total)</span>}</h2>
+        {pendingSalaries.length === 0 ? (
+          <p className="muted">No pending salaries. Everyone is paid up. 🎉</p>
+        ) : (
+          <div className="tableWrap">
+            <table className="table">
+              <thead><tr><th>Teacher</th><th>Month</th><th>Balance Due</th><th>Status</th></tr></thead>
+              <tbody>
+                {pendingSalaries.slice(0, 8).map((s) => (
+                  <tr key={s.id}>
+                    <td>{s.teacher?.name || "-"}{s.teacher ? ` (${s.teacher.subject})` : ""}</td>
+                    <td>{s.month}</td>
+                    <td>Rs. {(Number(s.amount) - Number(s.paid)).toLocaleString()}</td>
+                    <td>{s.status}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {pendingSalaries.length > 8 && <p className="muted" style={{ marginTop: 8 }}>+{pendingSalaries.length - 8} more - see the Teacher Salary page for the full list.</p>}
+          </div>
+        )}
+      </div>
+
+      <div className="panel" style={{ marginTop: 20 }}>
         <h2>Quick Actions</h2>
         <div className="quickLinks">
+          <a className="quickLink" href="/student-lookup"><span className="qi">🔍</span>People Lookup</a>
           <a className="quickLink" href="/students"><span className="qi">🧑‍🎓</span>Students</a>
           <a className="quickLink" href="/teachers"><span className="qi">🧑‍🏫</span>Teachers</a>
           <a className="quickLink" href="/classes"><span className="qi">🏫</span>Classes</a>
           <a className="quickLink" href="/subjects"><span className="qi">📚</span>Subjects</a>
           <a className="quickLink" href="/attendance"><span className="qi">🗓️</span>Attendance</a>
           <a className="quickLink" href="/fees"><span className="qi">💳</span>Fees</a>
+          <a className="quickLink" href="/salary"><span className="qi">💵</span>Teacher Salary</a>
           <a className="quickLink" href="/results"><span className="qi">📝</span>Results</a>
+          <a className="quickLink" href="/homework"><span className="qi">📔</span>Homework</a>
           <a className="quickLink" href="/timetable"><span className="qi">⏰</span>Timetable</a>
           <a className="quickLink" href="/library"><span className="qi">📖</span>Library</a>
           <a className="quickLink" href="/inventory"><span className="qi">📦</span>Inventory</a>

@@ -1,25 +1,36 @@
 ﻿"use client";
 import { useEffect, useState } from "react";
 
-export default function StudentLookup() {
+export default function PeopleLookup() {
   const [students, setStudents] = useState([]);
+  const [teachers, setTeachers] = useState([]);
+  const [parents, setParents] = useState([]);
   const [query, setQuery] = useState("");
   const [profile, setProfile] = useState(null);
+  const [profileType, setProfileType] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("/api/students").then((r) => r.json()).then((data) => setStudents(Array.isArray(data) ? data : []));
+    fetch("/api/students").then((r) => r.json()).then((d) => setStudents(Array.isArray(d) ? d : []));
+    fetch("/api/teachers").then((r) => r.json()).then((d) => setTeachers(Array.isArray(d) ? d : []));
+    fetch("/api/parents").then((r) => r.json()).then((d) => setParents(Array.isArray(d) ? d : []));
   }, []);
 
-  const matches = query.trim()
-    ? students.filter((s) => s.name.toLowerCase().includes(query.trim().toLowerCase())).slice(0, 8)
+  const q = query.trim().toLowerCase();
+  const matches = q
+    ? [
+        ...students.filter((s) => s.name.toLowerCase().includes(q)).map((s) => ({ ...s, _type: "Student" })),
+        ...teachers.filter((t) => t.name.toLowerCase().includes(q)).map((t) => ({ ...t, _type: "Teacher" })),
+        ...parents.filter((p) => p.name.toLowerCase().includes(q)).map((p) => ({ ...p, _type: "Parent" })),
+      ].slice(0, 10)
     : [];
 
-  async function openProfile(id) {
-    setLoading(true); setError(""); setProfile(null);
+  async function openProfile(item) {
+    setLoading(true); setError(""); setProfile(null); setProfileType(item._type);
     try {
-      const r = await fetch(`/api/student-profile/${id}`);
+      const url = item._type === "Student" ? `/api/student-profile/${item.id}` : item._type === "Teacher" ? `/api/teacher-profile/${item.id}` : `/api/parent-profile/${item.id}`;
+      const r = await fetch(url);
       const data = await r.json();
       if (!r.ok) throw new Error(data.error || "Failed to load profile");
       setProfile(data);
@@ -32,11 +43,11 @@ export default function StudentLookup() {
 
   return (
     <>
-      <div className="top"><div><h1>Student Lookup</h1><div className="sub">Type a student's name to see their full profile - attendance, fees, results, and parent details.</div></div></div>
+      <div className="top"><div><h1>People Lookup</h1><div className="sub">Type any name - student, teacher, or parent - to see their full details instantly.</div></div></div>
 
       <div className="panel" style={{ marginBottom: 20 }}>
         <div className="field">
-          <label>Student Name</label>
+          <label>Name</label>
           <input
             autoFocus
             value={query}
@@ -46,28 +57,34 @@ export default function StudentLookup() {
         </div>
         {matches.length > 0 && !profile && (
           <div style={{ marginTop: 10 }}>
-            {matches.map((s) => (
+            {matches.map((m) => (
               <div
-                key={s.id}
-                onClick={() => openProfile(s.id)}
-                style={{ padding: "10px 14px", borderRadius: 8, cursor: "pointer", border: "1px solid #edf0f5", marginBottom: 6 }}
+                key={`${m._type}-${m.id}`}
+                onClick={() => openProfile(m)}
+                style={{ padding: "10px 14px", borderRadius: 8, cursor: "pointer", border: "1px solid #edf0f5", marginBottom: 6, display: "flex", justifyContent: "space-between" }}
                 onMouseEnter={(e) => (e.currentTarget.style.background = "#f5f7fb")}
                 onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
               >
-                <b>{s.name}</b> <span className="muted">- Roll {s.rollNo}, {s.className}-{s.section}</span>
+                <span>
+                  <b>{m.name}</b>{" "}
+                  <span className="muted">
+                    {m._type === "Student" ? `- Roll ${m.rollNo}, ${m.className}-${m.section}` : m._type === "Teacher" ? `- ${m.subject}` : `- ${m.phone || ""}`}
+                  </span>
+                </span>
+                <span className="muted" style={{ fontSize: 12, fontWeight: 600 }}>{m._type}</span>
               </div>
             ))}
           </div>
         )}
-        {query.trim() && matches.length === 0 && !profile && <p className="muted" style={{ marginTop: 10 }}>No student found matching "{query}".</p>}
+        {q && matches.length === 0 && !profile && <p className="muted" style={{ marginTop: 10 }}>No one found matching "{query}".</p>}
       </div>
 
       {loading && <p className="muted">Loading profile...</p>}
       {error && <div className="loginError">{error}</div>}
 
-      {profile && (
+      {profile && profileType === "Student" && (
         <div className="panel">
-          <h2>{profile.name} <span className="muted" style={{ fontWeight: 400, fontSize: 14 }}>(Roll {profile.rollNo}, {profile.className}-{profile.section})</span></h2>
+          <h2>{profile.name} <span className="muted" style={{ fontWeight: 400, fontSize: 14 }}>(Student - Roll {profile.rollNo}, {profile.className}-{profile.section})</span></h2>
 
           <div className="cards" style={{ marginTop: 14 }}>
             <div className="card"><div className="label">Attendance</div><div className="num">{profile.attendance.percent !== null ? `${profile.attendance.percent}%` : "N/A"}</div></div>
@@ -129,6 +146,86 @@ export default function StudentLookup() {
               </table>
             </div>
           )}
+        </div>
+      )}
+
+      {profile && profileType === "Teacher" && (
+        <div className="panel">
+          <h2>{profile.name} <span className="muted" style={{ fontWeight: 400, fontSize: 14 }}>(Teacher)</span></h2>
+
+          <div className="cards" style={{ marginTop: 14 }}>
+            <div className="card"><div className="label">Total Salary</div><div className="num">Rs. {profile.salary.total.toLocaleString()}</div></div>
+            <div className="card"><div className="label">Paid</div><div className="num">Rs. {profile.salary.paid.toLocaleString()}</div></div>
+            <div className="card"><div className="label">Balance Due</div><div className="num" style={{ color: profile.salary.balance > 0 ? "#c02020" : "#1a9c53" }}>Rs. {profile.salary.balance.toLocaleString()}</div></div>
+          </div>
+
+          <div className="twoCol" style={{ marginTop: 20 }}>
+            <div>
+              <h3>Personal Details</h3>
+              <p className="muted" style={{ lineHeight: 1.9 }}>
+                Main Subject: {profile.subject || "-"}<br />
+                Qualification: {profile.qualification || "-"}<br />
+                Phone: {profile.phone || "-"}<br />
+                Email: {profile.email || "-"}<br />
+                Address: {profile.address || "-"}<br />
+                Joining Date: {profile.joiningDate || "-"}
+              </p>
+            </div>
+            <div>
+              <h3>Teaching Assignments</h3>
+              <p className="muted" style={{ lineHeight: 1.9 }}>
+                Class Teacher for: {profile.classesTaught.length ? profile.classesTaught.join(", ") : "-"}<br />
+                Subjects Taught: {profile.subjectsTaught.length ? profile.subjectsTaught.join(", ") : "-"}
+              </p>
+            </div>
+          </div>
+
+          <h3 style={{ marginTop: 20 }}>Salary Records</h3>
+          {profile.salary.records.length === 0 ? <p className="muted">No salary records.</p> : (
+            <div className="tableWrap">
+              <table className="table">
+                <thead><tr><th>Month</th><th>Amount</th><th>Paid</th><th>Status</th></tr></thead>
+                <tbody>{profile.salary.records.map((s) => <tr key={s.id}><td>{s.month}</td><td>Rs. {Number(s.amount).toLocaleString()}</td><td>Rs. {Number(s.paid).toLocaleString()}</td><td>{s.status}</td></tr>)}</tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
+      {profile && profileType === "Parent" && (
+        <div className="panel">
+          <h2>{profile.name} <span className="muted" style={{ fontWeight: 400, fontSize: 14 }}>(Parent / Guardian)</span></h2>
+          <div className="twoCol" style={{ marginTop: 14 }}>
+            <div>
+              <h3>Contact Details</h3>
+              <p className="muted" style={{ lineHeight: 1.9 }}>
+                Phone: {profile.phone || "-"}<br />
+                Email: {profile.email || "-"}<br />
+                Address: {profile.address || "-"}<br />
+                Occupation: {profile.occupation || "-"}
+              </p>
+            </div>
+            <div>
+              <h3>Children</h3>
+              {profile.children.length === 0 ? <p className="muted">No linked students.</p> : (
+                <div className="tableWrap">
+                  <table className="table">
+                    <thead><tr><th>Name</th><th>Class</th><th>Attendance</th><th>Fee Balance</th></tr></thead>
+                    <tbody>
+                      {profile.children.map((c) => (
+                        <tr key={c.id}>
+                          <td>{c.name}</td>
+                          <td>{c.className}-{c.section}</td>
+                          <td>{c.attendancePercent !== null ? `${c.attendancePercent}%` : "N/A"}</td>
+                          <td style={{ color: c.feeBalance > 0 ? "#c02020" : "#1a9c53" }}>Rs. {c.feeBalance.toLocaleString()}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </>
